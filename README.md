@@ -4,7 +4,7 @@
 
 This will help you if following preconditiona are met:
 
-* Your project follows (semver)[http://semver.org]
+* Your project follows [http://semver.org](http://semver.org)
 * Semver versions are git tags
 * You accept changes exclusevely via PRs (i.e. there are git merges)
 * Each PR has tags in the beggining of git title (ex. [fixes] [bug] [new feature] etc)
