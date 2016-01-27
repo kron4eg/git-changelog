@@ -1,0 +1,17 @@
+{
+	"version": 0,
+	"dependencies": [
+		{
+			"importpath": "github.com/Masterminds/semver",
+			"repository": "https://github.com/Masterminds/semver",
+			"revision": "c4f7ef0702f269161a60489ccbbc9f1241ad1265",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/codegangsta/cli",
+			"repository": "https://github.com/codegangsta/cli",
+			"revision": "f9cc3001e04f9783cb4ad08ca6791aa07134787c",
+			"branch": "master"
+		}
+	]
+}
