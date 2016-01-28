@@ -8,7 +8,7 @@ import (
 var tmpl = `
 # Changelog
 {{ range . }}
-## Version {{ .Version }} ({{ .Date.Format "2006 01 02" }})
+## Version {{ .Version }} @ {{ .Date.Format "2006-01-02" }}
 {{ range .Actions }}
 ### {{ .Action }}
 {{ range .Changes }}
