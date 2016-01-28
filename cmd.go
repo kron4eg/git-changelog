@@ -17,14 +17,16 @@ import (
 var (
 	debugGit   bool
 	timeLayout = `Mon, 02 Jan 2006 15:04:05 -0700`
-	re         = regexp.MustCompile(`Subject: \[PATCH\] (.+)`)
-	re2        = regexp.MustCompile(`\[(.+)\] (.+)`)
+	ghRE       = regexp.MustCompile(`Merge pull request (\#\d+) from (.+)\/`)
+	actRE      = regexp.MustCompile(`\[([\w\s\.]+)\]`)
+	changeRe   = regexp.MustCompile(`\] ([^\]\n]+)`)
+	nullbyte   = []byte{0x00}
 )
+
+type actionsMap map[string][]string
 
 func changelogCmd(c *cli.Context) {
 	debugGit = c.Bool("debug")
-	// parse commit messages
-	// render CHANGELOG.md
 
 	vs := getSemverTags()
 	context := make([]Version, 0)
@@ -42,7 +44,7 @@ func changelogCmd(c *cli.Context) {
 			Date:    tagdatetime,
 		}
 		tagRange := fmt.Sprintf("%s...%s", vs[i+1].Original(), v.Original())
-		merge := git("log", "--pretty=email", "--merges", tagRange)
+		merge := git("log", `--pretty=%B%x00`, "--merges", tagRange)
 		version.Actions = parseActions(merge)
 		context = append(context, version)
 	}
@@ -66,13 +68,18 @@ func git(params ...string) []byte {
 
 func parseActions(commits []byte) []Action {
 	a := []Action{}
-	actsMap := map[string][]string{}
+	actsMap := make(actionsMap)
 
-	for _, rez := range re.FindAllSubmatch(commits, -1) {
-		// log.Printf("%s", rez[1])
-		for _, inner := range re2.FindAllSubmatch(rez[1], -1) {
-			key := string(inner[1])
-			actsMap[key] = append(actsMap[key], string(inner[2]))
+	commitsSplit := bytes.Split(commits, nullbyte)
+	if len(commitsSplit) == 0 {
+		return a
+	}
+
+	for _, c := range commitsSplit {
+		if ghRE.Match(c) {
+			ghParse(c, actsMap)
+		} else if actRE.Match(c) {
+			regularParse(c, actsMap)
 		}
 	}
 
@@ -109,4 +116,26 @@ func render(c []Version) {
 	if err := changeLogTpl.Execute(os.Stdout, c); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func ghParse(b []byte, m actionsMap) {
+	match := ghRE.FindAllSubmatch(b, -1)
+	prauthor := match[0]
+	ghPR, ghAuthor := prauthor[1], prauthor[2]
+	actualTitle := bytes.Split(b, []byte("\n\n"))[1]
+
+	act, change := extractAction(actualTitle)
+	change = fmt.Sprintf("%s. PR %s by @%s", change, ghPR, ghAuthor)
+	m[act] = append(m[act], change)
+}
+
+func extractAction(b []byte) (string, string) {
+	act := actRE.FindAllSubmatch(b, -1)[0][1]
+	change := changeRe.FindAllSubmatch(b, -1)[0][1]
+	return string(act), string(change)
+}
+
+func regularParse(b []byte, m actionsMap) {
+	act, change := extractAction(b)
+	m[act] = append(m[act], change)
 }
