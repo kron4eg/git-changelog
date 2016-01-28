@@ -12,7 +12,7 @@ var tmpl = `
 {{ range .Actions }}
 ### {{ .Action }}
 {{ range .Changes }}
-  * {{ . }}{{ end }}
+* {{ . }}{{ end }}
 {{ end }}{{ end }}`
 
 var (
