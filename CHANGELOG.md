@@ -1,20 +1,26 @@
 
 # Changelog
 
+## Version v0.1.3 @ 2016-01-28
+
+### fixed
+
+* Markdown Formatting. PR [#4][] by [@kron4eg][].
+
 ## Version v0.1.2 @ 2016-01-28
 
 ### fixed
 
-  * Added link to PR and profile. PR [#3][] by [@kron4eg][]
+* Added link to PR and profile. PR [#3][] by [@kron4eg][].
 
 ## Version v0.1.1 @ 2016-01-28
 
 ### fix
 
-  * Fixes for github style merges. PR [#2][] by [@kron4eg][]
+* Fixes for github style merges. PR [#2][] by [@kron4eg][].
 
 ## Version v0.1.0 @ 2016-01-28
 
 ### fixed
 
-  * README.md. PR [#1][] by [@kron4eg][]
+* README.md. PR [#1][] by [@kron4eg][].
