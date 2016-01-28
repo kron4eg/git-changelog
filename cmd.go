@@ -125,7 +125,7 @@ func ghParse(b []byte, m actionsMap) {
 	actualTitle := bytes.Split(b, []byte("\n\n"))[1]
 
 	act, change := extractAction(actualTitle)
-	change = fmt.Sprintf("%s. PR [%s][] by [@%s][]", change, ghPR, ghAuthor)
+	change = fmt.Sprintf("%s. PR [%s][] by [@%s][].", change, ghPR, ghAuthor)
 	m[act] = append(m[act], change)
 }
 
